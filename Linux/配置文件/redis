@@ -7,7 +7,7 @@ EXEC=/usr/local/redis/bin/redis-server
 REDIS_CLI=/usr/local/redis/bin/redis-cli
  
 PIDFILE=/var/run/redis.pid   
-CONF="/usr/local/redis/redis.conf"
+CONF="/usr/local/redis/6379.conf"
 AUTH="Hongru123"
 
 case "$1" in   
