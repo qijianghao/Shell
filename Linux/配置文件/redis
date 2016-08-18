@@ -3,11 +3,11 @@
   
 PATH=/usr/local/bin:/sbin:/usr/bin:/bin
 REDISPORT=6379
-EXEC=/usr/local/redis/bin/redis-server
-REDIS_CLI=/usr/local/redis/bin/redis-cli
+EXEC=/usr/local/bin/redis-server
+REDIS_CLI=/usr/local/bin/redis-cli
  
 PIDFILE=/var/run/redis.pid   
-CONF="/usr/local/redis/6379.conf"
+CONF="/etc/redis/6379.conf"
 AUTH="Hongru123"
 
 case "$1" in   
