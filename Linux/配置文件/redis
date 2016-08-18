@@ -8,7 +8,7 @@ REDIS_CLI=/usr/local/bin/redis-cli
  
 PIDFILE=/var/run/redis.pid   
 CONF="/etc/redis/6379.conf"
-AUTH="Hongru123"
+AUTH="Passwd"
 
 case "$1" in   
         start)   
