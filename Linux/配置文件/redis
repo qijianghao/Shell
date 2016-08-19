@@ -6,9 +6,10 @@ REDISPORT=6379
 EXEC=/usr/local/bin/redis-server
 REDIS_CLI=/usr/local/bin/redis-cli
  
-PIDFILE=/var/run/redis.pid   
+PIDFILE=/var/run/redis_6379.pid   
 CONF="/etc/redis/6379.conf"
 AUTH="Passwd"
+BIND_IP='127.0.0.1'
 
 case "$1" in   
         start)   
@@ -31,7 +32,7 @@ case "$1" in
                 else  
                         PID=$(cat $PIDFILE)   
                         echo "Stopping..."  
-                       $REDIS_CLI -p $REDISPORT  SHUTDOWN    
+                       $REDIS_CLI -h $BIND_IP -a $AUTH -p $REDISPORT  SHUTDOWN    
                         sleep 2  
                        while [ -x $PIDFILE ]   
                        do  
