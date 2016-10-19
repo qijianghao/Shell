@@ -14,7 +14,7 @@ if [ ! -d "$Backpath" ]; then
 fi
 for db in ${Databases[*]}
   do
-    /usr/bin/mysqldump -h$HOST -u$USER -p$PASSWD $db > $Backpath$Time/"$db"_"$Time".sql
+    /usr/bin/mysqldump -h$HOST -u$USER -p$PASSWD $db|gzip > $Backpath$Time/"$db"_"$Time".sql.gz
 #    cd  $Backpath$Time/
 #    tar zcf "$db"_"$Time".sql.tar.gz "$db"_"$Time".sql
 #    find $Backpath -mtime +60 -name "*.sql.tar.gz" -exec rm -rf {} \;
