@@ -29,3 +29,9 @@ Date=`date +"%y-%m-%d"`
 mkdir -p $Bakdir/$Date
 cd $Bakdir/$Date
 tar zcf flynar.Manager-$Date.tar.gz $Webdir
+
+tar -zcf /backup/web/www_`date +%Y%m%d`.tar.gz /www/web.com
+
+Crontb计划任务
+0 2 1 * * /backup/webbak.sh 2>&1 >>/backup/webbak.log
+0 1 * * 1 /backup/dbbak.sh 2>&1 >>/backup/dbbak.log
