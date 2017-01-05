@@ -1,5 +1,5 @@
-Êý¾Ý¿â±¸·Ý
-Ö§³Ö¶à¿â±¸·Ý
+æ•°æ®åº“å¤‡ä»½
+æ”¯æŒå¤šåº“å¤‡ä»½
 
 #!/bin/bash
 Databases=(db_Name db_Name2 db_Name3) 
@@ -17,10 +17,10 @@ for db in ${Databases[*]}
     /usr/bin/mysqldump -h$HOST -u$USER -p$PASSWD $db|gzip > $Backpath$Time/"$db"_"$Time".sql.gz
 #    cd  $Backpath$Time/
 #    tar zcf "$db"_"$Time".sql.tar.gz "$db"_"$Time".sql
-#    find $Backpath -mtime +60 -name "*.sql.tar.gz" -exec rm -rf {} \;
+#    find $Backpath -mtime +60 -name "*.sql.gz" -exec rm -rf {} \;
   done
 
-ÎÄ¼þ´ò°ü
+æ–‡ä»¶æ‰“åŒ…
 
 #!/bin/bash
 Webdir=/www/website/
@@ -32,6 +32,6 @@ tar zcf flynar.Manager-$Date.tar.gz $Webdir
 
 tar -zcf /backup/web/www_`date +%Y%m%d`.tar.gz /www/web.com
 
-Crontb¼Æ»®ÈÎÎñ
+Crontbè®¡åˆ’ä»»åŠ¡
 0 2 1 * * /backup/webbak.sh 2>&1 >>/backup/webbak.log
 0 1 * * 1 /backup/dbbak.sh 2>&1 >>/backup/dbbak.log
