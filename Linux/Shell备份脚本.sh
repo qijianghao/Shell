@@ -1,5 +1,5 @@
-æ•°æ®åº“å¤‡ä»½
-æ”¯æŒå¤šåº“å¤‡ä»½
+Êý¾Ý¿â±¸·Ý
+Ö§³Ö¶à¿â±¸·Ý
 
 #!/bin/bash
 Databases=(db_Name db_Name2 db_Name3) 
@@ -8,19 +8,41 @@ HOST="127.0.0.1"
 USER="root"
 PASSWD="PASSWD"
 Time=`date +"%y-%m-%d"`
+mysqldump_path='/usr/bin/mysqldump'
 mkdir -p $Backpath$Time
 if [ ! -d "$Backpath" ]; then
   mkdir -p "$Backpath"
 fi
 for db in ${Databases[*]}
   do
-    /usr/bin/mysqldump -h$HOST -u$USER -p$PASSWD $db|gzip > $Backpath$Time/"$db"_"$Time".sql.gz
+    $mysqldump_path -h$HOST -u$USER -p$PASSWD $db|gzip > $Backpath$Time/"$db"_"$Time".sql.gz
+  done
 #    cd  $Backpath$Time/
 #    tar zcf "$db"_"$Time".sql.tar.gz "$db"_"$Time".sql
 #    find $Backpath -mtime +60 -name "*.sql.gz" -exec rm -rf {} \;
+#     find $Bakdir -type d -empty -exec rmdir {} \; #É¾³ý¿ÕÄ¿Â¼
+
+#All db
+
+#!/bin/bash
+
+Backpath='/backup/db/'
+HOST="127.0.0.1"
+USER="root"
+PASSWD="hongru123,.!"
+Time=`date +"%y-%m-%d"`
+mysqldump_path='/usr/bin/mysqldump'
+Databases=`/usr/bin/mysql -u$USER -p$PASSWD -Bse 'show databases'`
+mkdir -p $Backpath$Time
+if [ ! -d "$Backpath" ]; then
+  mkdir -p "$Backpath"
+fi
+for db in $Databases
+  do
+    $mysqldump_path -h$HOST -u$USER -p$PASSWD $db|gzip > $Backpath$Time/"$db"_"$Time".sql.gz
   done
 
-æ–‡ä»¶æ‰“åŒ…
+ÎÄ¼þ´ò°ü
 
 #!/bin/bash
 Webdir=/www/website/
@@ -32,6 +54,52 @@ tar zcf flynar.Manager-$Date.tar.gz $Webdir
 
 tar -zcf /backup/web/www_`date +%Y%m%d`.tar.gz /www/web.com
 
-Crontbè®¡åˆ’ä»»åŠ¡
+forÑ­»·´ò°ü£¬ÎÄ¼þ¼ÐÏÂ×ÓÎÄ¼þ¼Ðµ¥¶À´ò°ü
+
+#!/bin/bash
+Webdir=/www/website/
+Bakdir=/www/backup/web/
+Date=`date +"%y-%m-%d"`
+find ${Webdir} -mindepth 1 -maxdepth 1 -type d |grep -v "hongru"|awk -F "/" '{print $NF}' > $Bakdir/BakdirName.txt
+BakdirName=$(cat $Bakdir/BakdirName.txt)
+mkdir -p $Bakdir/$Date
+cd $Bakdir/$Date
+for j in $BakdirName
+	do
+		tar zcf $j-$Date.tar.gz ${Webdir}/$j
+	done
+find $Bakdir -mtime +60 -name "*.tar.gz" -exec rm -rf {} \;
+find $Bakdir -type d -empty -exec rmdir {} \;
+
+ÒìµØftp×Ô¶¯±¸·Ý
+#!/bin/bash
+Time=`date +"%y-%m-%d"`
+FTP_HOST="221.122.117.188:4242"
+FTP_USER="XHR_184"
+FTP_PASSWD="z5trs9xXBJe9ET"
+
+cd /backup/db
+lftp << EOF
+open $FTP_HOST
+user $FTP_USER $FTP_PASSWD
+mkdir db
+cd db
+mirror -R $Time
+bye
+EOF
+
+cd /backup/web
+lftp << EOF
+open $FTP_HOST
+user $FTP_USER $FTP_PASSWD
+mkdir web
+cd web
+mirror -R $Time
+bye
+EOF
+
+
+Crontb¼Æ»®ÈÎÎñ
 0 2 1 * * /backup/webbak.sh 2>&1 >>/backup/webbak.log
 0 1 * * 1 /backup/dbbak.sh 2>&1 >>/backup/dbbak.log
+
