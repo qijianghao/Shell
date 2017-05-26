@@ -1,0 +1,253 @@
+#Nginx所用用户和组，window下不指定
+#user  niumd niumd;
+
+#工作的子进程数量（通常等于CPU数量或者2倍于CPU）
+worker_processes  8;
+
+#错误日志存放路径
+#error_log  logs/error.log;
+#error_log  logs/error.log  notice;
+error_log  logs/error.log  info;
+
+#指定pid存放文件
+pid        logs/nginx.pid;
+
+events {
+	#使用网络IO模型linux建议epoll，FreeBSD建议采用kqueue，window下不指定。
+	#use epoll;
+	#允许最大连接数
+	worker_connections  2048;
+}
+
+http {
+	include       mime.types;
+	default_type  application/octet-stream;
+	
+	#定义日志格式
+	log_format  main  '$remote_addr - $remote_user [$time_local] $request '
+	                  '"$status" $body_bytes_sent "$http_referer" '
+	                  '"$http_user_agent" "$http_x_forwarded_for"';
+	
+	#access_log  off;
+	access_log  logs/access.log main;
+	
+	server_names_hash_bucket_size 512;
+	client_header_buffer_size    128k;
+	large_client_header_buffers  4 128k;
+
+	
+	sendfile        on;
+	tcp_nopush      on;
+	tcp_nodelay     on;
+	#keepalive_timeout  75 20;
+	include    proxy.conf;
+	
+	upstream localhost1 {
+		ip_hash;
+		server   localhost:7092;
+		server   localhost:7093;		
+		server   localhost:7095;
+	}
+	
+	upstream xinhongru_www {
+		ip_hash;
+		server   localhost:8080;
+	}	
+	
+	upstream localhostmng {
+		server   localhost:7095;
+	}
+
+	server {
+		
+		listen       80;
+		server_name  localhost;
+
+				
+		if ($host != 'www.bjotc.cn') {
+
+			rewrite ^/(.*)$ http://www.bjotc.cn/$1 permanent;
+
+		}
+
+
+		if ($uri ~ ^/(welcome.do|UIProcessor|lk|StartWorkflow)$ ) {			
+			
+			rewrite ^/(.*)$  http://www.bjotc.cn:8001/$1 permanent;
+		}
+			
+		location / {
+		
+			proxy_connect_timeout   5;
+			proxy_send_timeout      75;
+			proxy_read_timeout      75;
+			proxy_pass http://xinhongru_www;
+				   
+        	}
+
+	}
+#HTTPS
+server {
+    listen 443 ssl;
+    server_name localhost;
+    ssl on;
+    root html;
+    index index.html;
+    ssl_certificate   ssl/213990733570115.pem;
+    ssl_certificate_key  ssl/213990733570115.key;
+    ssl_session_timeout 5m;
+    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+ 
+		
+		## 匹配规则是从上到下,  除了图片配置后就全部跳转TOMCAT , 图片直接读取本地
+
+		   location ~* \.(html|gif|jpg|jpeg|png|bmp|ico|rar|css|js|zip|txt|flv|swf|doc|docx|ppt|pptx|xls|xlsx|mp3|wma|pdf|mp4|avi)$ {
+		   root   E:\Website\webapps\ROOT;
+		   index  index.html;
+		   proxy_redirect off;
+		   proxy_set_header Host $host;
+        	}
+			
+		location / {
+		
+			proxy_connect_timeout   5;
+			proxy_send_timeout      75;
+			proxy_read_timeout      75;
+			proxy_set_header   Host             $host;
+            proxy_set_header   X-Real-IP        $remote_addr;
+            proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+			proxy_pass https://localhost:8443/;
+				   
+        	}
+
+		location /webadmin {
+			allow 222.128.81.96;
+			allow 111.202.216.64;
+			allow 124.205.165.218;
+			deny all;
+			proxy_set_header   Host             $host;
+            proxy_set_header   X-Real-IP        $remote_addr;
+            proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+			proxy_pass https://localhost:8443/webadmin;
+			}
+		location ~ ^/(WEB-INF)/ { 
+			deny all; 
+			}
+		location /nginx-status {
+			stub_status on;
+			allow 124.205.165.218;
+			deny all;
+			}
+}
+	
+
+	upstream platform {
+		server   113.106.87.237:1350;
+		server   58.251.151.76:1350;
+	}
+
+	upstream platform_jjdj {
+		server   111.202.216.65:881;
+	}
+
+	server{
+		listen       8001;
+		server_name  localhost;
+
+
+		if ($request_uri ~* "([+|(%20)]and[+|(%20)])|([+|(%20)]or[+|(%20)])|([+|(%20)]select[+|(%20)])|([+|(%20)]exec[+|(%20)])|([+|(%20)]union[+|(%20)])") {
+		return 404;
+		}
+		if ($request_uri ~* "(cost\()|(concat\()") {
+		return 404;
+		}
+		if ($query_string ~ "(<|%3C).*script.*(>|%3E)") {
+		return 404;
+		}
+		if ($query_string ~ "GLOBALS(=|[|%[0-9A-Z]{0,2})") {
+		return 404;
+		}
+		if ($query_string ~ "_REQUEST(=|[|%[0-9A-Z]{0,2})") {
+		return 404;
+		}
+		if ($query_string ~ "proc/self/environ") {
+		return 404;
+		}
+		if ($query_string ~ "mosConfig_[a-zA-Z_]{1,21}(=|%3D)") {
+		return 404;
+		}
+		if ($query_string ~ "base64_(en|de)code(.*)") {
+		return 404;
+		}
+		if ($http_user_agent ~ "Python-urllib") {
+		return 404;
+		}
+		if ($query_string ~ "etc/hosts") {
+		return 404;
+		}
+		
+		
+		location / {
+			##proxy_set_header  Host service.bjotc.com;
+			##proxy_redirect off;
+			##proxy_set_header X-Real-IP $remote_addr;
+			##proxy_set_header X-Forwarded-For $remote_addr;
+			proxy_pass http://platform;
+			
+			
+		}
+
+		
+	}
+
+
+	server{
+		listen       881;
+		server_name  localhost;
+
+
+		if ($request_uri ~* "([+|(%20)]and[+|(%20)])|([+|(%20)]or[+|(%20)])|([+|(%20)]select[+|(%20)])|([+|(%20)]exec[+|(%20)])|([+|(%20)]union[+|(%20)])") {
+		return 404;
+		}
+		if ($request_uri ~* "(cost\()|(concat\()") {
+		return 404;
+		}
+		if ($query_string ~ "(<|%3C).*script.*(>|%3E)") {
+		return 404;
+		}
+		if ($query_string ~ "GLOBALS(=|[|%[0-9A-Z]{0,2})") {
+		return 404;
+		}
+		if ($query_string ~ "_REQUEST(=|[|%[0-9A-Z]{0,2})") {
+		return 404;
+		}
+		if ($query_string ~ "proc/self/environ") {
+		return 404;
+		}
+		if ($query_string ~ "mosConfig_[a-zA-Z_]{1,21}(=|%3D)") {
+		return 404;
+		}
+		if ($query_string ~ "base64_(en|de)code(.*)") {
+		return 404;
+		}
+		if ($http_user_agent ~ "Python-urllib") {
+		return 404;
+		}
+		if ($query_string ~ "etc/hosts") {
+		return 404;
+		}
+		
+		
+		location / {
+			proxy_pass http://platform_jjdj;
+			
+		}
+
+		
+	}
+
+
+	
+}
