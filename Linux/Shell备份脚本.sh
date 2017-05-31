@@ -3,25 +3,25 @@
 
 #!/bin/bash
 Databases=(db_Name1 db_Name2 db_Name3) 
-Backpath='/www/backup/db/'
+Bakdir='/www/backup/db/'
 HOST="127.0.0.1"
 USER="root"
 PASSWD="123456"
 Time=`date +"%y-%m-%d"`
 mysqldump_path='/usr/bin/mysqldump'
 
-if [ ! -d "$Backpath" ]; then
-  mkdir -p "$Backpath"
+if [ ! -d "$Bakdir" ]; then
+  mkdir -p "$Bakdir"
 fi
 
-mkdir -p $Backpath$Time
+mkdir -p $Bakdir$Time
 for db in ${Databases[*]}
   do
-    $mysqldump_path -h$HOST -u$USER -p$PASSWD $db|gzip > $Backpath$Time/"$db"_"$Time".sql.gz
+    $mysqldump_path -h$HOST -u$USER -p$PASSWD $db|gzip > $Bakdir$Time/"$db"_"$Time".sql.gz
   done
 
     #保留60天备份文件
-    find $Backpath -mtime +60 -name "*.sql.gz" -exec rm -rf {} \;
+    find $Bakdir -mtime +60 -name "*.sql.gz" -exec rm -rf {} \;
     #删除空目录
     find $Bakdir -type d -empty -exec rmdir {} \;
 
@@ -29,7 +29,7 @@ for db in ${Databases[*]}
 2、查询当前实例下所有数据，for循环备份
 
 #!/bin/bash
-Backpath='/backup/db/'
+Bakdir='/backup/db/'
 HOST="127.0.0.1"
 USER="root"
 PASSWD="123456"
@@ -37,18 +37,18 @@ Time=`date +"%y-%m-%d"`
 mysqldump_path='/usr/bin/mysqldump'
 Databases=`/usr/bin/mysql -u$USER -p$PASSWD -Bse 'show databases'`
 
-if [ ! -d "$Backpath" ]; then
-  mkdir -p "$Backpath"
+if [ ! -d "$Bakdir" ]; then
+  mkdir -p "$Bakdir"
 fi
 
-mkdir -p $Backpath$Time
+mkdir -p $Bakdir$Time
 for db in $Databases
   do
-    $mysqldump_path -h$HOST -u$USER -p$PASSWD $db|gzip > $Backpath$Time/"$db"_"$Time".sql.gz
+    $mysqldump_path -h$HOST -u$USER -p$PASSWD $db|gzip > $Bakdir$Time/"$db"_"$Time".sql.gz
   done
 
     #保留60天备份文件
-    find $Backpath -mtime +60 -name "*.sql.gz" -exec rm -rf {} \;
+    find $Bakdir -mtime +60 -name "*.sql.gz" -exec rm -rf {} \;
     #删除空目录
     find $Bakdir -type d -empty -exec rmdir {} \;
 
@@ -64,6 +64,10 @@ mkdir -p $Bakdir/$Date
 cd $Bakdir/$Date
 tar zcf $Bakname-$Date.tar.gz $Webdir
 
+    #保留60天备份文件
+    find $Bakdir -mtime +60 -name "*.tar.gz" -exec rm -rf {} \;
+    #删除空目录
+    find $Bakdir -type d -empty -exec rmdir {} \;
 
 4、for循环打包，文件夹下子文件夹单独打包
 
@@ -80,10 +84,10 @@ for j in $BakdirName
 		tar zcf $j-$Date.tar.gz ${Webdir}/$j
 	done
 
-  #保留60天备份文件
-  find $Bakdir -mtime +60 -name "*.tar.gz" -exec rm -rf {} \;
-  #删除空目录
-  find $Bakdir -type d -empty -exec rmdir {} \;
+    #保留60天备份文件
+    find $Bakdir -mtime +60 -name "*.tar.gz" -exec rm -rf {} \;
+    #删除空目录
+    find $Bakdir -type d -empty -exec rmdir {} \;
 
 
 5、异地ftp自动备份
