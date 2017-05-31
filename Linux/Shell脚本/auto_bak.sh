@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #db环境变量配置
-Databases=(DB_hlbn db_hualu2015 hualu2011 juyiwang) 
+Databases=(DB_name1 DB_name2 DB_name3) 
 dbBakdir='/backup/db/'
 HOST="127.0.0.1"
 USER="root"
