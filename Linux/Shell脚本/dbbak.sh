@@ -2,8 +2,8 @@
 Databases=(dadifengjing) 
 Backpath='/home/backup/db/'
 HOST="127.0.0.1"
-USER="mysql140"
-PASSWD="mysql140"
+USER="abc"
+PASSWD="123456"
 Time=`date +"%y-%m-%d"`
 mysqldump_path='/www/wdlinux/mysql-5.5.54/bin/mysqldump'
 
