@@ -1,7 +1,7 @@
 #!/bin/bash
-Webdir='/home/bescn_com/'
-Bakdir='/home/backup/web/'
-Bakname='bescn_com'
+Webdir='/abc.com/'
+Bakdir='/backup/web/'
+Bakname='abc.com'
 Date=`date +"%y-%m-%d"`
 mkdir -p $Bakdir/$Date
 cd $Bakdir/$Date
