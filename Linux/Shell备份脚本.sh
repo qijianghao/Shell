@@ -56,9 +56,9 @@ for db in $Databases
 3、文件打包
 
 #!/bin/bash
-Webdir=/www/website/abc.com
-Bakdir=/www/backup/web/
-Bakname=abc.com
+Webdir='/www/website/abc.com'
+Bakdir='/www/backup/web/'
+Bakname='abc.com'
 Date=`date +"%y-%m-%d"`
 mkdir -p $Bakdir/$Date
 cd $Bakdir/$Date
@@ -68,8 +68,8 @@ tar zcf $Bakname-$Date.tar.gz $Webdir
 4、for循环打包，文件夹下子文件夹单独打包
 
 #!/bin/bash
-Webdir=/www/website/
-Bakdir=/www/backup/web/
+Webdir='/www/website/'
+Bakdir='/www/backup/web/'
 Date=`date +"%y-%m-%d"`
 find ${Webdir} -mindepth 1 -maxdepth 1 -type d |grep -v "hongru"|awk -F "/" '{print $NF}' > $Bakdir/BakdirName.txt
 BakdirName=$(cat $Bakdir/BakdirName.txt)

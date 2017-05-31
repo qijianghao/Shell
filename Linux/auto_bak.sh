@@ -10,9 +10,9 @@ Time=`date +"%y-%m-%d"`
 mysqldump_path='/usr/bin/mysqldump'
 
 #web环境变量配置
-Webdir=/var/www/html/
-webBakdir=/backup/web/
-Webname=abc.com
+Webdir='/var/www/html/'
+webBakdir='/backup/web/'
+Webname='abc.com'
 
 #异地备份FTP参数配置
 FTP_HOST="1.1.1.1:21"
