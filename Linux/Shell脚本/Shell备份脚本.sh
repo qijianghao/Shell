@@ -1,5 +1,5 @@
-1¡¢Êý¾Ý¿â±¸·Ý
-Ö§³Ö¶à¿â±¸·Ý
+1ã€æ•°æ®åº“å¤‡ä»½
+æ”¯æŒå¤šåº“å¤‡ä»½
 
 #!/bin/bash
 Databases=(db_Name1 db_Name2 db_Name3) 
@@ -20,13 +20,13 @@ for db in ${Databases[*]}
     $mysqldump_path -h$HOST -u$USER -p$PASSWD $db|gzip > $Bakdir$Time/"$db"_"$Time".sql.gz
   done
 
-    #±£Áô60Ìì±¸·ÝÎÄ¼þ
+    #ä¿ç•™60å¤©å¤‡ä»½æ–‡ä»¶
     find $Bakdir -mtime +60 -name "*.sql.gz" -exec rm -rf {} \;
-    #É¾³ý¿ÕÄ¿Â¼
+    #åˆ é™¤ç©ºç›®å½•
     find $Bakdir -type d -empty -exec rmdir {} \;
 
 
-2¡¢²éÑ¯µ±Ç°ÊµÀýÏÂËùÓÐÊý¾Ý£¬forÑ­»·±¸·Ý
+2ã€æŸ¥è¯¢å½“å‰å®žä¾‹ä¸‹æ‰€æœ‰æ•°æ®ï¼Œforå¾ªçŽ¯å¤‡ä»½
 
 #!/bin/bash
 Bakdir='/backup/db/'
@@ -47,13 +47,13 @@ for db in $Databases
     $mysqldump_path -h$HOST -u$USER -p$PASSWD $db|gzip > $Bakdir$Time/"$db"_"$Time".sql.gz
   done
 
-    #±£Áô60Ìì±¸·ÝÎÄ¼þ
+    #ä¿ç•™60å¤©å¤‡ä»½æ–‡ä»¶
     find $Bakdir -mtime +60 -name "*.sql.gz" -exec rm -rf {} \;
-    #É¾³ý¿ÕÄ¿Â¼
+    #åˆ é™¤ç©ºç›®å½•
     find $Bakdir -type d -empty -exec rmdir {} \;
 
 
-3¡¢ÎÄ¼þ´ò°ü
+3ã€æ–‡ä»¶æ‰“åŒ…
 
 #!/bin/bash
 Webdir='/www/website/abc.com'
@@ -64,12 +64,12 @@ mkdir -p $Bakdir/$Date
 cd $Bakdir/$Date
 tar zcf $Bakname-$Date.tar.gz $Webdir
 
-    #±£Áô60Ìì±¸·ÝÎÄ¼þ
+    #ä¿ç•™60å¤©å¤‡ä»½æ–‡ä»¶
     find $Bakdir -mtime +60 -name "*.tar.gz" -exec rm -rf {} \;
-    #É¾³ý¿ÕÄ¿Â¼
+    #åˆ é™¤ç©ºç›®å½•
     find $Bakdir -type d -empty -exec rmdir {} \;
 
-4¡¢forÑ­»·´ò°ü£¬ÎÄ¼þ¼ÐÏÂ×ÓÎÄ¼þ¼Ðµ¥¶À´ò°ü
+4ã€forå¾ªçŽ¯æ‰“åŒ…ï¼Œæ–‡ä»¶å¤¹ä¸‹å­æ–‡ä»¶å¤¹å•ç‹¬æ‰“åŒ…
 
 #!/bin/bash
 Webdir='/www/website/'
@@ -84,13 +84,13 @@ for j in $BakdirName
 		tar zcf $j-$Date.tar.gz ${Webdir}/$j
 	done
 
-    #±£Áô60Ìì±¸·ÝÎÄ¼þ
+    #ä¿ç•™60å¤©å¤‡ä»½æ–‡ä»¶
     find $Bakdir -mtime +60 -name "*.tar.gz" -exec rm -rf {} \;
-    #É¾³ý¿ÕÄ¿Â¼
+    #åˆ é™¤ç©ºç›®å½•
     find $Bakdir -type d -empty -exec rmdir {} \;
 
 
-5¡¢ÒìµØftp×Ô¶¯±¸·Ý
+5ã€å¼‚åœ°ftpè‡ªåŠ¨å¤‡ä»½
 #!/bin/bash
 Time=`date +"%y-%m-%d"`
 FTP_HOST="1.1.1.1"
@@ -118,9 +118,8 @@ bye
 EOF
 
 
-6¡¢Crontb¼Æ»®ÈÎÎñ
-#Ã¿ÔÂ1ºÅ2µã¿ªÊ¼±¸·ÝÍøÒ³ÎÄ¼þ
+6ã€Crontbè®¡åˆ’ä»»åŠ¡
+#æ¯æœˆ1å·2ç‚¹å¼€å§‹å¤‡ä»½ç½‘é¡µæ–‡ä»¶
 0 2 1 * * /backup/webbak.sh 2>&1 >>/backup/webbak.log
-#Ã¿ÖÜÒ» 1µã¿ªÊ¼±¸·ÝÊý¾Ý¿â
+#æ¯å‘¨ä¸€ 1ç‚¹å¼€å§‹å¤‡ä»½æ•°æ®åº“
 0 1 * * 1 /backup/dbbak.sh 2>&1 >>/backup/dbbak.log
-
