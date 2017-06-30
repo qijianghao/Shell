@@ -34,8 +34,8 @@ HOST="127.0.0.1"
 USER="root"
 PASSWD="123456"
 Time=`date +"%y-%m-%d"`
-mysqldump_path='/usr/bin/mysqldump'
-Databases=`/usr/bin/mysql -u$USER -p$PASSWD -Bse 'show databases'`
+Mysql_install_path='/usr/bin'
+Databases=`$Mysql_install_path/mysql -u$USER -p$PASSWD -Bse 'show databases' | grep -Ev 'performance_schema|information_schema|mysql|test'`
 
 if [ ! -d "$Bakdir" ]; then
   mkdir -p "$Bakdir"
@@ -44,7 +44,7 @@ fi
 mkdir -p $Bakdir$Time
 for db in $Databases
   do
-    $mysqldump_path -h$HOST -u$USER -p$PASSWD $db|gzip > $Bakdir$Time/"$db"_"$Time".sql.gz
+    $Mysql_install_path/mysqldump -h$HOST -u$USER -p$PASSWD $db|gzip > $Bakdir$Time/"$db"_"$Time".sql.gz
   done
 
     #保留60天备份文件
