@@ -1,0 +1,1 @@
+fsutil 8dot3name set 1
