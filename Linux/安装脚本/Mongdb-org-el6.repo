@@ -1,0 +1,5 @@
+[mongodb-org]
+name=MongoDB Repository
+baseurl=http://mirrors.aliyun.com/mongodb/yum/redhat/6Server/mongodb-org/3.4/
+gpgcheck=0
+enabled=1
