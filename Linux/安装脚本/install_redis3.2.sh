@@ -3,8 +3,10 @@ if [ ! -f redis-3.2.11.tar.gz ];then
 wget -c http://download.redis.io/releases/redis-3.2.11.tar.gz
 fi
 tar -zxf redis-3.2.11.tar.gz
+yum remove -y pcre-8.32-15.el7_2.1.i686
 yum install -y gcc gcc-c++ pcre zlib pcre-devel tcl
 cd redis-3.2.11
+make MALLOC=libc
 make && cd src &&make test
 make install
 

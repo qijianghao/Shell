@@ -1,4 +1,5 @@
 #!/bin/bash
+yum remove -y pcre-8.32-15.el7_2.1.i686
 yum -y install gcc gcc-c++ autoconf automake wget zlib zlib-devel openssl openssl-devel pcre-devel pcre gd-devel bzip2 centos-release
 groupadd www && useradd -g www www -s /sbin/nologin
 
