@@ -26,7 +26,7 @@ for db in ${Databases[*]}
     find $Bakdir -type d -empty -exec rmdir {} \;
 
 
-2、查询当前实例下所有数据，for循环备份
+2、查询当前实例下所有数据库，for循环备份
 
 #!/bin/bash
 Bakdir='/backup/db/'
