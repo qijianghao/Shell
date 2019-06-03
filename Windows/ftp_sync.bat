@@ -1,9 +1,9 @@
 rem 异地备份Mssql 数据库备份
 set time=%date:~0,4%-%date:~5,2%-%date:~8,2%
-set ftp_host=192.168.1.92
+set ftp_host=
 set ftp_port=21
-set ftp_user=XHR_Backup
-set ftp_passwd=Hklsa0QCzgSebx0O
+set ftp_user=
+set ftp_passwd=
 
 set sourcepath=D:\Backup\Mysql
 set destpath=192.168.1.7
